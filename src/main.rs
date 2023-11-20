@@ -1,12 +1,14 @@
+// main.rs
+
 use axum::{
     http::StatusCode,
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
-use chrono::Utc;
-use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
+
+mod models;
 
 #[tokio::main]
 async fn main() {
@@ -44,27 +46,12 @@ async fn hb() -> impl IntoResponse {
 async fn create_user(
     // this argument tells axum to parse the request body
     // as JSON into a `CreateUser` type
-    Json(payload): Json<CreateUserRequest>,
-) -> (StatusCode, Json<UserDto>) {
+    Json(payload): Json<models::CreateUserRequest>,
+) -> (StatusCode, Json<models::UserDto>) {
     // insert your application logic here
-    let now = Utc::now();
-    let user = UserDto {
-        name: payload.username,
-        created_at: now.to_string(),
-    };
+    let user = models::UserDto::new(payload.username);
 
     // this will be converted into a JSON response
     // with a status code of `201 Created`
     (StatusCode::CREATED, Json(user))
-}
-
-#[derive(Serialize)]
-pub struct UserDto {
-    pub(crate) name: String,
-    pub(crate) created_at: String,
-}
-
-#[derive(Deserialize)]
-pub struct CreateUserRequest {
-    pub(crate) username: String,
 }
