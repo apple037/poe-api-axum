@@ -6,14 +6,20 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
+use std::io;
 use std::net::SocketAddr;
+use tracing::Level;
 
 mod models;
 
 #[tokio::main]
 async fn main() {
     // initialize tracing
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+    .with_max_level(Level::TRACE)
+    .with_writer(io::stdout)
+    .init();
+
 
     // build our application with a route
     let app = Router::new()
