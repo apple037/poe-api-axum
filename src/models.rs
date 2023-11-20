@@ -1,5 +1,3 @@
-// models.rs
-
 use serde::{Deserialize, Serialize};
 use chrono::Utc;
 
